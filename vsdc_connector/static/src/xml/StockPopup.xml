@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+<t t-name="StockPopup" owl="1">
+    <div role="dialog" class="modal-dialog">
+        <div class="popup opening-cash-control stock">
+            <header class="title drag-handle">
+                STOCK CONTROL WARNING!
+            </header>
+            <main class="body">
+                <div class="stock-lines">
+                    <p class="warning">There is no enough stock <span t-if="location">in <span class="location" t-esc="location"/></span> to  complete the order.
+                        Please correct the stock quantities for the products below to continue</p><br/>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Demanded Quantity</th>
+                                <th>Available Quantity</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr t-foreach="lines" t-as="line">
+                                <td><t t-esc="line[0]"/></td>
+                                <td><t t-esc="line[1]"/></td>
+                                <td><t t-esc="line[2]"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+            <footer class="footer">
+                <div class="button" t-on-click="confirm()">Ok</div>
+            </footer>
+        </div>
+    </div>
+     </t>
+</templates>

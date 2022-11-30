@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!--        Add VSDC-related fields to the company form-->
+        <record id="view_res_company_extended_form" model="ir.ui.view">
+            <field name="name">view_res_company_extended_form</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="priority">100</field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='logo']" position="before">
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="action_check_pass" attrs="{'invisible': [('device_installed', '=', False)]}"
+                                style="color:green" icon="fa-check-circle">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">
+                                    Device
+                                </span>
+                                <span class="o_stat_text">
+                                    Connected
+                                </span>
+                            </div>
+                        </button>
+                        <button class="oe_stat_button" type="object" name="action_check_pass" attrs="{'invisible': [('device_installed', '=', True)]}"
+                                style="color:red" icon="fa-warning">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">
+                                    Device
+                                </span>
+                                <span class="o_stat_text">
+                                    not Connected
+                                </span>
+                            </div>
+                        </button>
+                    </div>
+                </xpath>
+                <xpath expr="//page[@name='general_info']//field[@name='vat']" position="replace"/>
+                <xpath expr="//notebook" position="inside">
+                    <page name="vsdc_auth_details" string="VSDC">
+                        <group>
+                            <group string="Auth Details">
+                                <field name="vat" required="1" placeholder="e.g 123456789"/>
+                                <field name="sdc_base_url" required="1" placeholder="e.g http://localhost:8000"/>
+                                <field name="device_installed" required="1" invisible="1"/>
+                                <field name="branch_id" required="1" placeholder="e.g SDCXXXXXXXXX"/>
+                                <field name="sdc_serial_no" required="1"/>
+                                <field name="last_request_date" required="1"/>
+                                <field name="default_customer"
+                                       placeholder="Will be used as the default customer in POS"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page name="vsdc_initialization_details" string="VSDC Initialization">
+                        <group>
+                            <button name="action_initialize_vsdc" type="object" class="btn btn-primary" >
+                                <i class="fa fa-cog"/>&amp;nbsp;
+                                Initialize VSDC
+                            </button>
+                        </group>
+                        <group>
+                            <group string="Tax Payer Information">
+                                <field name="initialized" invisible="1"/>
+                                <field name="vat"/>
+                                <field name="branch_id"/>
+                                <field name="business_Activity"/>
+                                <field name="branch_office_name"/>
+                                <field name="branch_date_created"/>
+                            </group>
+                            <group string="Tax Payer Address">
+                                <field name="province_name"/>
+                                <field name="district_name"/>
+                                <field name="sector_name"/>
+                                <field name="location"/>
+                            </group>
+                             <group string="Management Details">
+                                <field name="manager_name"/>
+                                <field name="manager_phone"/>
+                                <field name="manager_email"/>
+                            </group>
+                            <group string="VSDC Information">
+                                <field name="sdc_id"/>
+                                <field name="mrc_number"/>
+                                <field name="device_id"/>
+                                <field name="internal_key"/>
+                                <field name="sign_key"/>
+                                <field name="communication_key"/>
+                            </group>
+                            <group string="VSDC Courier">
+                                <field name="last_sale_invoice_number"/>
+                                <field name="last_purchase_invoice_number"/>
+                                <field name="last_sale_receipt_number"/>
+                                <field name="last_invoice_number"/>
+                                <field name="last_cis_invoice_number"/>
+                                <field name="last_training_invoice_number"/>
+                                <field name="last_proforma_invoice_number"/>
+                                <field name="last_copy_invoice_number"/>
+                            </group>
+                        </group>
+                        <group string="Request/Response Data">
+
+                            <field name="initialize_request" readonly="1"/>
+                            <field name="initialize_response" readonly="1"/>
+                        </group>
+                        <group string="Initial Request/Response Data">
+                            <field name="ist_initialize_request" readonly="1"/>
+                            <field name="ist_initialize_response" readonly="1"/>
+                        </group>
+                    </page>
+                    <page name="vsdc_branch_details" string="VSDC Branch Selection">
+                        <group>
+                            <button name="action_import_vsdc_branches" type="object" class="btn btn-primary">
+                                <i class="fa fa-download"/>&amp;nbsp;
+                                Import VSDC Branches
+                            </button>
+                            <button name="action_update_company_details" type="object" class="btn btn-primary">
+                                <i class="fa fa-refresh"/>&amp;nbsp;
+                                Update Company Details
+                            </button>
+
+                        </group>
+                        <group>
+                            <group string="Select Branch">
+                                <field name="vsdc_branch_id"/>
+                            </group>
+                        </group>
+                        <group>
+                             <group string="Branch Details">
+                                <field name="branch_tin"/>
+                                <field name="branch"/>
+                                <field name="branch_name"/>
+                                <field name="branch_status"/>
+                                <field name="branch_province"/>
+                                <field name="branch_district"/>
+                                <field name="branch_sector"/>
+                                <field name="branch_location"/>
+                                <field name="branch_type"/>
+                            </group>
+                            <group string="Branch Manager Details">
+                                <field name="branch_manager_name"/>
+                                <field name="branch_manager_phone"/>
+                                <field name="branch_manager_email"/>
+                            </group>
+
+                        </group>
+                        <group string="Request/Response Data">
+
+                            <field name="import_branches_request" readonly="1"/>
+                            <field name="import_branches_response" readonly="1"/>
+                        </group>
+                    </page>
+                    <page name="vsdc_imports_exports" string="VSDC Data Import/Export">
+                        <group>
+                            <group string="Action Import">
+                                <button name="action_import_essentials" type="object" class="btn btn-primary mt-4">
+                                    <i class="fa fa-download"/>&amp;nbsp;
+                                    Essentials
+                                </button>
+                                <br/>
+                                <button name="action_import_item_class" type="object" class="btn btn-primary mt-4">
+                                    <i class="fa fa-download"/>&amp;nbsp;
+                                    Item Classifications
+                                </button>
+                            </group>
+                        </group>
+                        <group string="Essentials Request/Response Data">
+
+                            <field name="essentials_request" readonly="1"/>
+                            <field name="essentials" readonly="1"/>
+
+                        </group>
+                        <group string="Classifications Request/Response Data">
+
+                            <field name="item_class_request" readonly="1"/>
+                            <field name="item_class" readonly="1"/>
+
+                        </group>
+                    </page>
+
+                </xpath>
+                <xpath expr="//page[@name='general_info']/group/group[2]" position="inside">
+                    <field name="vsdc_branch_id"/>
+                    <field name="branch_status"/>
+                    <field name="branch_type"/>
+                    <field name="branch_location"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

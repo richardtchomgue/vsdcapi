@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="TicketScreen" t-inherit="point_of_sale.TicketScreen" t-inherit-mode="extension" owl="1">
+		<xpath expr="//div[hasclass('order-row')]" position="replace">
+			<div class="order-row" t-att-class="{reversed:order.reversed}" t-on-click="trigger('click-order', order)">
+                                    <div class="col wide">
+                                        <div t-if="env.isMobile">Date</div>
+										<div><t t-esc="getDate(order)"></t></div>
+                                    </div>
+				<div class="col wide">
+                                        <div t-if="env.isMobile">Receipt Number</div>
+					<div><t t-esc="order.name"></t></div>
+                                    </div>
+				<div class="col">
+                                        <div t-if="env.isMobile">Customer</div>
+					<div><t t-esc="getCustomer(order)"></t></div>
+                                    </div>
+				<div t-if="showCardholderName()" class="col">
+                                        <div t-if="env.isMobile">Cardholder Name</div>
+					<div><t t-esc="getCardholderName(order)"></t></div>
+                                    </div>
+				<div class="col">
+                                        <div t-if="env.isMobile">Employee</div>
+					<div><t t-esc="getEmployee(order)"></t></div>
+                                    </div>
+				<div class="col end">
+                                        <div t-if="env.isMobile">Total</div>
+					<div><t t-esc="getTotal(order)"></t></div>
+                                    </div>
+				<div class="col narrow">
+                                        <div t-if="env.isMobile">Status</div>
+					<div><t t-esc="getStatus(order)"></t></div>
+                                    </div>
+				<div t-if="!shouldHideDeleteButton(order)" class="col very-narrow delete-button" name="delete" t-on-click.stop="trigger('delete-order', order)">
+                                        <i class="fa fa-trash" aria-hidden="true"/><t t-if="env.isMobile"> Delete</t>
+                                    </div>
+				<div t-else="" class="col very-narrow"></div>
+                                </div>
+		</xpath>
+	</t>
+</templates>

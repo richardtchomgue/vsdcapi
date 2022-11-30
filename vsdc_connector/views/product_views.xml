@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="product_supplierinfo_form_view_inherit" model="ir.ui.view">
+            <field name="name">product_supplierinfo_categid</field>
+            <field name="model">product.supplierinfo</field>
+            <field name="inherit_id" ref="product.product_supplierinfo_form_view"/>
+            <field name="priority">100</field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='product_code']" position="after">
+                    <field name="categ_code"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="product_template_form_vsdc_view" model="ir.ui.view">
+            <field name="name">product.template.vsdc.form</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="account.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='taxes_id']" position="attributes">
+                    <attribute name="required">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="product_template_form_view" model="ir.ui.view">
+            <field name="name">product.template.form</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <button name="sdc_send_item" string="Sync to VSDC" type="object"/>
+                </xpath>
+                <xpath expr="//field[@name='invoice_policy']" position="before">
+                    <field name="item_code" attrs="{'invisible':[('product_variant_count','>',1)]}"/>
+                    <field name="sent_to_vsdc" invisible="1"/>
+                    <field name="rra_product_type"/>
+                    <field name="unspsc_categ_id"/>
+                    <field name="quantity_unit"/>
+                    <field name="packaging_unit"/>
+                    <field name="origin_country"/>
+                </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page name="vsdc" string="VSDC">
+                        <group>
+                            <field name="synced_date" readonly="1"/>
+                            <field name="date_sent" string="Data Sent" readonly="1"/>
+                            <field name="response" string="Response" readonly="1"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="product_template_tree_view" model="ir.ui.view">
+            <field name="name">product.template.tree</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_tree_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='virtual_available']" position="after">
+                    <field name="taxes_id" widget="many2many_tags"/>
+                    <field name="supplier_taxes_id" widget="many2many_tags"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="product_product_tree_view" model="ir.ui.view">
+            <field name="name">poduct.product.tree</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_product_tree_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='default_code']" position="after">
+                    <field name="item_code"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="product_normal_form_view" model="ir.ui.view">
+            <field name="name">product.product.form</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <button name="sdc_send_item" string="Sync to VSDC" type="object"/>
+                </xpath>
+                <xpath expr="//field[@name='default_code']" position="after">
+                    <field name="item_code"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

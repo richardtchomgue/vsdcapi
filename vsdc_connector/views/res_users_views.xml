@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+ <!--        Displaying VSDC Details for the user-->
+        <record id="view_groups_form" model="ir.ui.view">
+            <field name="name">res.users.form</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <button string="VSDC: Sync User" type="object" name="action_sync_user_with_vsdc" class="oe_highlight" attrs="{'invisible': [('synced_date', '!=', False)]}"/>
+                </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page name="vsdc" string="VSDC">
+                        <sheet>
+                            <group>
+                                <group>
+                                    <field name="mrc"/>
+                                    <field name="sdc_access_key" password="True"/>
+                                    <field name="machine_serial_number"/>
+                                    <field name="training_mode"/>
+                                </group>
+                                <group/>
+                            </group>
+                            <group>
+                                <field name="synced_date" readonly="1"/>
+                                <field name="data_sent" string="Data Sent" readonly="1"/>
+                                <field name="response" readonly="1"/>
+                            </group>
+                        </sheet>
+                    </page>
+                </xpath>
+
+            </field>
+        </record>
+    </data>
+</odoo>

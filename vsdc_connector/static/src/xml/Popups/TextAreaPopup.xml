@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="TextAreaPopupExt" t-inherit="point_of_sale.TextAreaPopup" t-inherit-mode="extension" owl="1">
+        <xpath expr="//textarea" position="before">
+            <div t-if="state.reasons.filter((item) => item.text !== '').length &gt; 0"
+                 style="padding-top: 15px;margin-right: 15px">
+                    <div class="scrollable-y" style="display:flex; justify-content: center;height:180px;padding-bottom: 15px;">
+                    <table class="reasons-list">
+                        <tbody class="reasons-list-contents">
+                            <t t-foreach="reasons" t-as="reason" t-key="reason._id">
+                                <ReasonLine reason="reason"
+                                         selectedReason="state.selectedReason"
+                                         t-on-click-reason="clickReason"/>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </xpath>
+
+    </t>
+
+</templates>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Add VSDC-related fields to the customer form-->
+        <record id="view_partner_structured_form" model="ir.ui.view">
+            <field name="name">view_partner_structured_form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="priority">100</field>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page name="vsdc" string="VSDC">
+                        <group>
+                            <field name="synced_date" readonly="1"/>
+                            <field name="date_sent" string="Data" readonly="1"/>
+                            <field name="response" string="Response" readonly="1"/>
+                        </group>
+                    </page>
+                </xpath>
+                <xpath expr="//sheet/group/group[1]" position="inside">
+                    <field name="location"/>
+                    <field name="tax_payer_status"/>
+                    <field name="mrc" placeholder="e.g MRCXXXXXXXX" attrs="{'readonly': [('parent_id','!=',False)]}"/>
+                    <field name="sdc_id" placeholder="e.g SDCXXXXXXXXX"
+                           attrs="{'readonly': [('parent_id','!=',False)]}"/>
+                </xpath>
+                <xpath expr="//field[@name='vat']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='image_1920']" position="before">
+                    <group class="mb-4">
+                        <group>
+                            <label for="vat"/>
+                            <div class="o_row">
+                                <field name="vat" required="1" placeholder="e.g. BE0477472701"
+                                       attrs="{'readonly': [('parent_id','!=',False)]}"/>
+                                <button name="get_customer_details" attrs="{'invisible': [('synced_date', '!=', False)]}" type="object" class="btn btn-primary">
+                                    <i class="fa fa-search"/>
+                                    Search &amp; Sync
+                                </button>
+                                <button name="sync_customer_with_vsdc" attrs="{'invisible': [('synced_date', '=', False)]}" type="object" class="btn btn-secondary">
+                                    <i class="fa fa-upload"/>
+                                    Resync With VSDC
+                                </button>
+                            </div>
+                        </group>
+                    </group>
+                </xpath>
+
+                <xpath expr="//page[@name='sales_purchases']" position="after">
+                    <page name="card_ids" string="Product Mapping">
+                        <sheet>
+                            <field name="product_mapping_ids">
+                                <tree editable="bottom">
+                                    <field name="partner_code"/>
+                                    <field name="product_id"/>
+                                </tree>
+                            </field>
+                        </sheet>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

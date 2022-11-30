@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="invoice_sequence" model="ir.sequence">
+            <field name="name">Invoice Sequence</field>
+            <field name="code">invoice.sequence</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="bill_sequence" model="ir.sequence">
+            <field name="name">Bill Sequence</field>
+            <field name="code">bill.sequence</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="ir_cron_auto_fetch_import_items" model="ir.cron">
+            <field name="name">Import items; Fetch items</field>
+            <field name="model_id" ref="model_recv_import_item"/>
+            <field name="state">code</field>
+            <field name="code">model.action_fetch_items()</field>
+            <field name="interval_number">30</field>
+            <field name="interval_type">minutes</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall"/>
+            <field name="active">False</field>
+        </record>
+        <record id="ir_cron_auto_fetch_purchases" model="ir.cron">
+            <field name="name">Account Move Recv; Fetch purchases</field>
+            <field name="model_id" ref="model_account_move_recv"/>
+            <field name="active">False</field>
+            <field name="state">code</field>
+            <field name="code">model.action_fetch_purchases()</field>
+            <field name="interval_number">30</field>
+            <field name="interval_type">minutes</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall"/>
+        </record>
+
+        <record id="ir_cron_sdc_send_moves" model="ir.cron">
+            <field name="active">False</field>
+            <field name="name">Send Moves to VSDC</field>
+            <field name="model_id" ref="model_account_move"/>
+            <field name="state">code</field>
+            <field name="code">model.cron_send_to_vsdc()</field>
+            <field name="interval_number">10</field>
+            <field name="interval_type">minutes</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall"/>
+        </record>
+        <record id="ir_cron_sdc_send_products" model="ir.cron">
+            <field name="active">False</field>
+            <field name="name">Send Products to VSDC</field>
+            <field name="model_id" ref="model_product_product"/>
+            <field name="state">code</field>
+            <field name="code">model.cron_send_to_vsdc()</field>
+            <field name="interval_number">10</field>
+            <field name="interval_type">minutes</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall"/>
+        </record>
+
+        <record id="ir_cron_sdc_send_imports" model="ir.cron">
+            <field name="name">Send Import Items to VSDC</field>
+            <field name="model_id" ref="model_recv_import_item"/>
+            <field name="active">False</field>
+            <field name="state">code</field>
+            <field name="code">model.cron_send_to_vsdc()</field>
+            <field name="interval_number">10</field>
+            <field name="interval_type">minutes</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall"/>
+        </record>
+
+        <record id="ir_cron_sdc_import_notifications" model="ir.cron">
+            <field name="name">Receive VSDC Notifications</field>
+            <field name="model_id" ref="model_vsdc_notice"/>
+            <field name="active">False</field>
+            <field name="state">code</field>
+            <field name="code">model.get_vsdc_notifications()</field>
+            <field name="interval_number">2</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall"/>
+        </record>
+
+        <record id="action_account_zreport" model="ir.actions.client">
+            <field name="name">Daily Z Report</field>
+            <field name="tag">account_report</field>
+            <field name="context" eval="{'model': 'account.zreport'}" />
+        </record>
+
+        <menuitem id="menu_action_account_zreport" name="Daily Z Report" action="action_account_zreport" parent="account_reports.account_reports_audit_reports_menu"/>
+    </data>
+</odoo>

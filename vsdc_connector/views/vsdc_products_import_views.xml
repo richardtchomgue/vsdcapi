@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="vsdc_product_import_view_search" model="ir.ui.view">
+            <field name="name">vsdc.product.import.search</field>
+            <field name="model">vsdc.product.import</field>
+            <field name="arch" type="xml">
+                <search string="VSDC Products">
+                    <field name="itemNm" string="Name" filter_domain="[('itemNm','ilike',self)]"/>
+                    <field name="itemCd" string="Item Code" filter_domain="[('itemCd','ilike',self)]"/>
+                    <field name="itemClsCd" string="Item Classification Code"
+                           filter_domain="[('itemClsCd','ilike',self)]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="vsdc_product_import_view_tree" model="ir.ui.view">
+            <field name="name">vsdc.product.import.tree</field>
+            <field name="model">vsdc.product.import</field>
+            <field name="arch" type="xml">
+                <tree string="vsdc_product_import_tree" create="0">
+                    <field name="itemNm" optional="show"/>
+                    <field name="tin" optional="show"/>
+                    <field name="itemCd" optional="show"/>
+                    <field name="itemClsCd" optional="show"/>
+                    <field name="itemTyCd" optional="show"/>
+                    <field name="itemStdNm" optional="show"/>
+                    <field name="orgnNatCd" optional="show"/>
+                    <field name="pkgUnitCd" optional="show"/>
+                    <field name="qtyUnitCd" optional="show"/>
+                    <field name="taxTyCd" optional="show"/>
+                    <field name="btchNo" optional="hide"/>
+                    <field name="regBhfId" optional="hide"/>
+                    <field name="bcd" optional="show"/>
+                    <field name="dftPrc" optional="hide"/>
+                    <field name="grpPrcL1" optional="hide"/>
+                    <field name="grpPrcL2" optional="hide"/>
+                    <field name="grpPrcL3" optional="hide"/>
+                    <field name="grpPrcL4" optional="hide"/>
+                    <field name="grpPrcL5" optional="hide"/>
+                    <field name="addInfo" optional="hide"/>
+                    <field name="sftyQty" optional="hide"/>
+                    <field name="isrcAplcbYn" optional="hide"/>
+                    <field name="rraModYn" optional="hide"/>
+                    <field name="useYn" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="vsdc_product_import_view_form" model="ir.ui.view">
+            <field name="name">vsdc.product.import.form</field>
+            <field name="model">vsdc.product.import</field>
+            <field name="arch" type="xml">
+                <form string="Received Import Items" create="0" edit="0">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="tin"/>
+                                <field name="itemCd"/>
+                                <field name="itemClsCd"/>
+                                <field name="itemTyCd"/>
+                                <field name="itemNm"/>
+                                <field name="itemStdNm"/>
+                                <field name="orgnNatCd"/>
+                                <field name="pkgUnitCd"/>
+                                <field name="qtyUnitCd"/>
+                                <field name="taxTyCd"/>
+                            </group>
+                            <group>
+                                <field name="btchNo"/>
+                                <field name="regBhfId"/>
+                                <field name="bcd"/>
+                                <field name="dftPrc"/>
+                                <field name="grpPrcL1"/>
+                                <field name="grpPrcL2"/>
+                                <field name="grpPrcL3"/>
+                                <field name="grpPrcL4"/>
+                                <field name="grpPrcL5" string="Received on"/>
+                                <field name="addInfo"/>
+                                <field name="sftyQty"/>
+                                <field name="isrcAplcbYn"/>
+                                <field name="rraModYn"/>
+                                <field name="useYn"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="vsdc" string="VSDC">
+                                <group string="Request/Response Data">
+                                    <field name="request" readonly="1"/>
+                                    <field name="response" string="Response" readonly="1"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_import_vsdc_products" model="ir.actions.act_window">
+            <field name="name">Products</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">vsdc.product.import</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Nothing here yet
+                </p>
+                <p>
+                    VSDC Products will be displayed here
+                </p>
+            </field>
+        </record>
+
+
+        <menuitem id="menu_import_vsdc_products" name="Import VSDC Products" parent="vsdc_connector.menu_stock_vsdc"
+                  action="action_import_vsdc_products"
+                  sequence="10"/>
+
+    </data>
+</odoo>

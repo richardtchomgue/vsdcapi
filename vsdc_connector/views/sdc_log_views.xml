@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="sdc_log_view_tree" model="ir.ui.view">
+            <field name="name">sdc.log.tree</field>
+            <field name="model">sdc.log</field>
+            <field name="arch" type="xml">
+                <tree string="VSDC Logs">
+                    <field name="company_id"/>
+                    <field name="sid"/>
+                    <field name="type"/>
+                    <field name="time"/>
+                    <field name="description"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="vsdc_branches_view_tree" model="ir.ui.view">
+            <field name="name">vsdc.branches.tree</field>
+            <field name="model">vsdc.branch</field>
+            <field name="arch" type="xml">
+                <tree string="VSDC Logs" create="0">
+                    <field name="branch_tin"/>
+                    <field name="branch_id"/>
+                    <field name="branch_name"/>
+                    <field name="branch_status"/>
+                    <field name="branch_province"/>
+                    <field name="branch_district"/>
+                    <field name="branch_sector"/>
+                    <field name="branch_location"/>
+                    <field name="branch_type"/>
+                    <field name="branch_manager_name"/>
+                    <field name="branch_manager_phone"/>
+                    <field name="branch_manager_email"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="vsdc_notice_view_form" model="ir.ui.view">
+            <field name="name">vsdc.notice.form</field>
+            <field name="model">vsdc.notice</field>
+            <field name="arch" type="xml">
+                <form string="VSDC Notices" create="0" edit="0">
+                    <header>
+                        <button name="action_message_read" string="Mark as read" icon="fa-envelope-open-o"
+                            type="object" class="oe_highlight"
+                            attrs="{'invisible': [('is_read','=',True)]}"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="notice_number"/>
+                                <field name="detail_url" widget="CopyClipboardURL"/>
+                            </group>
+                            <group>
+                                <field name="is_read" widget="boolean_toggle" readonly="1"/>
+                                <field name="registration_name"/>
+                                <field name="registration_date"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Content">
+                                <field name="content"/>
+                            </page>
+                            <page name="vsdc" string="VSDC">
+                                <group>
+                                    <field name="date_sent" string="Data Sent" readonly="1"/>
+                                    <field name="response" readonly="1"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="vsdc_notice_view_tree" model="ir.ui.view">
+            <field name="name">vsdc.notice.tree</field>
+            <field name="model">vsdc.notice</field>
+            <field name="arch" type="xml">
+                <tree string="VSDC Notices" create="0" edit="0">
+                    <field name="notice_number"/>
+                    <field name="name"/>
+                    <field name="registration_date"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_sdc_log">
+            <field name="name">VSDC Logs</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sdc.log</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_vsdc_branches">
+            <field name="name">VSDC Branches</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">vsdc.branch</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_vsdc_notices">
+            <field name="name">VSDC Notifications</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">vsdc.notice</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_vsdc" name="VSDC" parent="base.menu_custom" sequence="500" groups="base.group_no_one"/>
+        <menuitem id="menu_vsdc_logs" name="Logs" parent="menu_vsdc" groups="base.group_no_one" action="action_sdc_log"/>
+        <menuitem id="menu_vsdc_branches" name="Branches" parent="menu_vsdc" groups="base.group_no_one" action="action_vsdc_branches"/>
+        <menuitem id="menu_vsdc_notices" name="Notifications" parent="menu_vsdc" groups="base.group_no_one" action="action_vsdc_notices"/>
+    </data>
+</odoo>
