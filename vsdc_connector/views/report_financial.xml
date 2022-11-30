@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <template id="main_table_header" inherit_id="account_reports.main_table_header" primary="True">
+            <xpath expr="//thead[hasclass('o_account_reports_header_hierarchy')]" position="before">
+                <p><t t-raw="header_info"/></p>
+            </xpath>
+        </template>
+        <template id="main_template" inherit_id="account_reports.main_template" primary="True">
+            <xpath expr="//table" position="after">
+                <div style="padding-bottom:2rem">
+                    <h4 class="mt-4">Summary</h4>
+                    <p><strong>Total Items Sold:</strong><span t-esc="footer_info.get('total_items_sold')"/></p>
+                    <p><strong>Incomplete Sales:</strong><span t-esc="footer_info.get('incomplete_sales')"/></p>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Receipt Label</th>
+                                <th>Amounts</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="footer_info.get('sales_amounts')" t-as="amount">
+                                <td><t t-esc="amount"></t></td>
+                                <td><t t-raw="amount_value"></t></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </xpath>
+        </template>
+    </data>
+</odoo>

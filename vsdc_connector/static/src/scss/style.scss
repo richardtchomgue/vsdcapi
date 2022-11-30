@@ -1,0 +1,99 @@
+.pos{
+  color:#4e4e4e;
+}
+.pos .pos-receipt-container{
+  div{
+    font-size: .8rem;
+  }
+  hr{
+    width:95%;
+    border-top: 1px dashed #4e4e4e;
+  }
+}
+.pos .screen{
+  p {
+    font-size: .8rem;
+  }
+
+}
+.pos-receipt {
+  line-height: 1.1em;
+  .pos-receipt-amount,.pos-receipt-order-data{
+    font-size: .8rem;
+  }
+  .pos-receipt-amount{
+    padding-left: 2em;
+  }
+  .pad-1{
+    padding-left: 1em;
+  }
+  .text-center,.emphasis{
+    text-align: center !important;
+  }
+  .flex {
+    display: flex;
+    justify-content: space-between;
+  }
+  .emphasis{
+    font-size: 1.1rem;
+    display:block;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+}
+.rra-logo {
+  width: 45px !important;
+  display: block;
+  margin: auto;
+  position: relative;
+  top:0;
+  left:0;
+}
+
+.order-selector{
+  padding-left: .5rem;
+}
+
+.pos-content{
+  .order-row{
+    position: relative;
+  }
+  .order-row.reversed::before{
+    content: "";
+    width:100%;
+    position: absolute;
+    top: 19px;
+    left: 0;
+    border-bottom: 2px solid #d21b1b;
+  }
+}
+
+.popup-textarea {
+  textarea {
+    width: 472px;
+    height: 147px;
+  }
+}
+
+
+.popup.stock{
+  max-width:750px !important;
+
+  main{
+    padding: 0 1.5rem 1rem !important;
+    margin: 0 !important;
+    .warning{
+      text-align: left;
+      .location{
+        color:#B56C39;
+      }
+
+    }
+    .table {
+      width: 100%;
+      td:first-of-type,th:first-of-type{
+        text-align: left;
+      }
+    }
+  }
+}

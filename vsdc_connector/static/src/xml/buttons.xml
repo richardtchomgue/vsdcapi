@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xml:space="preserve">
+ <t t-extend="ListView.buttons">
+ <t t-jquery="button.o_list_button_add" t-operation="after">
+ <button t-if="widget.modelName == 'product.template'" class="btn btn-primary o_list_tender_button_update_taxes ml-2" type="button">Update Taxes</button>
+ </t>
+  <t t-jquery="button.o_list_export_xlsx" t-operation="after">
+    <button t-if="widget.modelName == 'account.move.recv'" class="btn btn-primary o_list_tender_button_fetch_purchases ml-2" type="button">Fetch</button>
+    <button t-if="widget.modelName == 'recv.import.item'" class="btn btn-primary o_list_tender_button_fetch_import_items ml-2" type="button">Fetch</button>
+    <button t-if="widget.modelName == 'vsdc.product.import'" class="btn btn-primary o_list_tender_button_fetch_import_vsdc_products ml-2" type="button">Fetch</button>
+  </t>
+ </t>
+ </template>

@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+	<t t-name="OrderLinesReceipt" t-inherit="point_of_sale.OrderLinesReceipt" t-inherit-mode="extension" owl="1">
+		<xpath expr="//div[hasclass('responsive-price')]" position="replace">
+			<div>
+				<t t-esc="line.product_name_wrapped[0]"/>
+			</div>
+			<WrappedProductNameLines line="line"/>
+			<span t-esc="line.product_item_code"/>
+			<t t-if="line.display_discount_policy == 'without_discount' and line.price != line.price_lst">
+				<div class="">
+					<t t-esc="env.pos.format_currency_no_symbol(line.price_lst)"/>
+					->
+					<t t-esc="env.pos.format_currency_no_symbol(line.price)"/>
+				</div>
+			</t>
+			<t t-elif="line.discount !== 0">
+				<div class="">
+					<t t-if="env.pos.config.iface_tax_included === 'total'">
+						<t t-esc="env.pos.format_currency_no_symbol(line.price_with_tax_before_discount)"/>
+					</t>
+					<t t-else="">
+						<t t-esc="env.pos.format_currency_no_symbol(line.price)"/>
+					</t>
+				</div>
+			</t>
+			<t t-if="line.discount !== 0">
+				<div class="">
+					Discount: <t t-esc="line.discount"/>%
+				</div>
+			</t>
+			<div>
+				<t t-esc="env.pos.format_currency_no_symbol(line.price_display_one)"/>
+				x
+				<span style="padding-left:90px">
+					<t t-esc="Math.round(line.quantity * Math.pow(10, env.pos.dp['Product Unit of Measure'])) / Math.pow(10, env.pos.dp['Product Unit of Measure'])"/>
+					<t t-if="!line.is_in_unit" t-esc="line.unit_name"/>
+				</span>
+				<span class="price_display pos-receipt-right-align">
+					<t t-esc="env.pos.format_currency_no_symbol(line.price_display)"/>
+					<span t-esc="line.tax_code"/>
+				</span>
+			</div>
+		</xpath>
+	</t>
+
+    <t t-name="OrderReceipt" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension" owl="1">
+		<xpath expr="//div[hasclass('pos-receipt')]" position="replace">
+			<div class="pos-receipt">
+				<div class="logos" style="display:flex;align-items: center;justify-content: space-between;gap: 12px">
+					<img style="float:right;margin:0" src="/vsdc_connector/static/src/img/rra-logo.png" alt="RRA Logo"
+                         class="rra-logo img-responsive"/>
+                    <img style="float:right;margin:0" src="/vsdc_connector/static/src/img/rra-logo2.jpeg" alt="RRA Logo"
+                         class="rra-logo img-responsive"/>
+				</div>
+                <br/>
+                <div class="pos-receipt-contact">
+					<t t-if="receipt.company.logo">
+						<img t-att-src="receipt.company.logo" alt="Logo" class="img-responsive"
+                             style="max-width:120px"/>
+					</t>
+                    <t>
+						<h2 class="pos-receipt-center-align">
+							<t t-esc="receipt.company.name"/>
+						</h2>
+					</t>
+                    <t t-if="receipt.company">
+						<div>
+							<t t-if="receipt.company.street">
+								<t t-esc="receipt.company.street"/>,
+							</t>
+                            <span style="padding-left:4px" t-if="receipt.company.city">
+								<t t-esc="receipt.company.city"/>
+							</span>
+						</div>
+					</t>
+                    <t t-if='receipt.company.vat'>
+						<div>TIN:
+							<t t-esc='receipt.company.vat'/>
+						</div>
+					</t>
+					<t class="text-center">
+						Welcome to our shop <br/>
+					</t>
+				</div>
+                <t t-if="receipt.stamp &amp;&amp; receipt.stamp.printed &amp;&amp; !receipt.stamp.training">
+						<span class="emphasis">COPY</span></t>
+                <t t-if="receipt.stamp &amp;&amp; receipt.stamp.training">
+						<span class="emphasis">TRAINING MODE</span></t>
+                <hr/>
+                <t t-if="receipt.stamp.refund &amp;&amp; !receipt.stamp.training">
+					<p><span class="emphasis">REFUND.</span></p>
+                    <div style="max-width:260px" class="pad-1">REF. NORMAL RECEIPT#:<span t-esc='receipt.stamp.origin'
+                                                                                          class="pos-receipt-right-align"/></div>
+                    <hr/>
+				</t>
+                <p t-if="receipt.stamp.refund &amp;&amp; !receipt.stamp.training" class="text-center">REFUND IS APPROVED ONLY FOR ORIGINAL SALES RECEIPT</p>
+                <p class="text-center">
+                    <t t-if="receipt.client.vat">
+						Client ID:
+						<t t-esc='receipt.client.vat'/>
+					</t>
+					<br/>
+					<t t-if="receipt.client.name">
+						Client:
+						<t t-esc='receipt.client.name'/>
+					</t>
+				</p>
+                <hr/>
+                <!-- Orderlines -->
+                <div class="orderlines">
+					<t t-call="OrderLinesReceipt"/>
+				</div>
+                <t t-if="receipt.stamp &amp;&amp; receipt.stamp.training || receipt.stamp.printed">
+						<hr/>
+                    <span class="emphasis">THIS IS NOT AN OFFICIAL RECEIPT</span>
+					</t>
+                <hr/>
+                <div class="pos-receipt-amount bolded" style="font-weight:700">
+                TOTAL
+
+					<span t-esc='env.pos.format_currency(receipt._r(receipt.total_with_tax,receipt.stamp.refund))'
+                          class="pos-receipt-right-align"/>
+				</div>
+                <!-- Extra Payment Info -->
+                <t t-if='receipt.total_discount'>
+					<div class="pos-receipt-amount">
+                    Discounts
+
+						<span t-esc='env.pos.format_currency(receipt._r(receipt.total_discount,receipt.stamp.refund))'
+                              class="pos-receipt-right-align"/>
+					</div>
+				</t>
+                <t t-foreach='receipt.tax_details' t-as='tax'>
+					<div class="pos-receipt-amount">
+                        TOTAL
+						<t t-esc="tax.tax.label"/>
+                        <span t-esc='env.pos.format_currency(receipt._r(tax.base,receipt.stamp.refund))'
+                              class="pos-receipt-right-align"/>
+					</div>
+                    <t t-if="tax.tax.rra_code === 'B'">
+						<div class="pos-receipt-amount">
+                        TOTAL TAX B
+
+							<span t-esc='env.pos.format_currency(receipt._r(tax.amount,receipt.stamp.refund))'
+                                  class="pos-receipt-right-align"/>
+						</div>
+					</t>
+				</t>
+                <div class="pos-receipt-amount">
+                    TOTAL TAX
+
+					<span t-esc='env.pos.format_currency(receipt._r(receipt.total_tax, receipt.stamp.refund))'
+                          class="pos-receipt-right-align"/>
+				</div>
+                <hr/>
+                <t t-foreach='paymentlines' t-as='line'>
+					<div class="pad-1">
+						<t t-esc='line.name.toUpperCase()'/>
+                        <span t-esc='env.pos.format_currency(receipt._r(line.get_amount(),receipt.stamp.refund))'
+                              class="pos-receipt-right-align"/>
+					</div>
+				</t>
+                <t t-if="receipt.change">
+					<div class="pad-1">
+                    CHANGE
+
+						<span t-esc='env.pos.format_currency(receipt._r(receipt.change,receipt.stamp.refund))'
+                              class="pos-receipt-right-align"/>
+					</div>
+				</t>
+                <div class="pad-1">
+                ITEMS NUMBER
+
+					<span t-esc='receipt.orderlines.length' class="pos-receipt-right-align"/>
+				</div>
+                <t t-if='receipt.stamp'>
+					<div class="sdc-info pad-1">
+						<t t-if="receipt.stamp.training || receipt.stamp.printed"><hr/>
+                            <t t-if="receipt.stamp.printed &amp;&amp; !receipt.stamp.training">
+						<span class="emphasis">COPY</span></t>
+                            <t t-if="receipt.stamp.training">
+						<span class="emphasis">TRAINING MODE</span></t>
+						</t>
+                        <hr/>
+                        <h4 class="text-center">SDC INFORMATION</h4>
+                        <p t-if="receipt.stamp.Date and receipt.stamp.Time" class="flex">
+							<span>Date:
+								<t t-esc='receipt.stamp.Date'/>
+							</span>
+                            <span>Time:
+								<t t-esc='receipt.stamp.Time'/>
+							</span>
+						</p>
+                        <p class="flex" t-if="receipt.stamp.SNumber">
+							<span>SDC ID:</span>
+                            <span>
+								<t t-esc='receipt.stamp.SNumber'/>
+							</span>
+						</p>
+                        <p class="flex" t-if="receipt.stamp.RNumber">
+							<span>
+                        RECEIPT NUMBER:</span>
+                            <span>
+								<t t-esc='receipt.stamp.RNumber'/>
+							</span>
+						</p>
+                        <t>
+							<div class="text-center" t-if="receipt.stamp.internalData and receipt.stamp.signature">
+								<h4 class="text-center">Internal Data</h4>
+                                <p class="text-center">
+									<t t-esc="receipt.stamp.internalData"/>
+								</p>
+                                <h4 class="text-center">Receipt Signature</h4>
+                                <p>
+									<t t-esc="receipt.stamp.signature"/>
+								</p>
+                                <div id="receipt-qr-container"/></div>
+						</t>
+					</div>
+                    <div class="pos-receipt-order-data pad-1">
+						<hr/>
+                        <p class="flex">
+							<span>
+                                REF:</span>
+                            <span>
+								<t t-esc='receipt.name.slice(7)'/>
+							</span>
+						</p>
+                        <p class="flex" t-if="receipt.stamp.GNumber">
+							<span>RECEIPT NUMBER:</span>
+                            <span>
+								<t t-esc='receipt.stamp.GNumber'/>
+							</span>
+						</p>
+                        <p class="flex">
+							<span>DATE:
+								<t t-esc='receipt.stamp.cis_date'/>
+							</span>
+                            <span>TIME:
+								<t t-esc='receipt.stamp.cis_time'/>
+							</span>
+						</p>
+                        <p class="flex" t-if="receipt.stamp.mrc">
+							<span>
+                                  MRC:</span>
+                            <span>
+								<t t-esc='receipt.stamp.mrc'/>
+							</span>
+						</p>
+					</div>
+                    <hr/>
+				</t>
+                <div class="before-footer">
+					<t t-foreach="receipt.paymentlines" t-as="line">
+						<t t-if="line.ticket">
+							<br/>
+                            <div class="pos-payment-terminal-receipt">
+								<t t-raw="line.ticket"/>
+							</div>
+						</t>
+					</t>
+				</div>
+                <!-- Footer -->
+                <div t-if="receipt.footer_html" class="pos-receipt-center-align">
+					<t t-raw="receipt.footer_html"/>
+				</div>
+                <div t-if="!receipt.footer_html and receipt.footer" class="pos-receipt-center-align"
+                     style="white-space:pre-line">
+					<t t-esc="receipt.footer"/>
+				</div>
+                <t t-if="receipt.cashier">
+					<div class="cashier pos-receipt-center-align">
+						<div>Served by
+							<t t-esc="receipt.cashier"/>
+						</div>
+					</div>
+				</t>
+                <t t-if="receipt.stamp">
+					<p class="pos-receipt-center-align">THANK YOU</p>
+                    <p class="pos-receipt-center-align">COME BACK AGAIN</p>
+                    <p class="pos-receipt-center-align">YOUR BEST STORE IN TOWN</p>
+				</t>
+			</div>
+		</xpath>
+	</t>
+</templates>

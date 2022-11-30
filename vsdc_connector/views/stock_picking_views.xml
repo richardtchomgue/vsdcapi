@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_picking_form" model="ir.ui.view">
+        <field name="name">vsdc.inherit.view_picking_form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="sent_to_vsdc" invisible="1"/>
+                <field name="stock_in_out_id" attrs="{'invisible': [('picking_type_code','!=', 'internal')], 'required': [('picking_type_code', '=', 'internal')]}"/>
+            </xpath>
+
+            <xpath expr="//header" position="inside">
+                <button name="update_vsdc_stock" string="Update Inventory in VSDC" type="object"
+                        attrs="{'invisible' : [('sent_to_vsdc', '!=', True), ('state', '!=', 'done')]}"/>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page name="vsdc" string="VSDC">
+                    <group>
+                        <field name="synced_date" readonly="1"/>
+                        <field name="date_sent" string="Data" readonly="1"/>
+                        <field name="response" readonly="1"/>
+                    </group>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

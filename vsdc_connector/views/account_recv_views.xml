@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="account_move_recv_view_search" model="ir.ui.view">
+            <field name="name">account.move.recv.search</field>
+            <field name="model">account.move.recv</field>
+            <field name="arch" type="xml">
+                <search string="Received Purchases">
+                    <field name="spplrInvcNo" string="Invoice ID" filter_domain="[('spplrInvcNo','ilike',self)]"/>
+                    <field name="spplrTin" string="Supplier TIN" filter_domain="[('spplrTin','ilike',self)]"/>
+                    <!--<field name="sdc_rec_id" string="VSDC ID" filter_domain="[('sdc_rec_id','ilike',self)]"/>-->
+                    <filter name="synchronized" string="Synchronized" domain="[('synchronized','!=',False)]"/>
+                    <filter name="nonsynchronized" string="Not Synchronized" domain="[('synchronized','=',False)]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="account_move_recv_view_tree" model="ir.ui.view">
+            <field name="name">account.move.recv.tree</field>
+            <field name="model">account.move.recv</field>
+            <field name="arch" type="xml">
+                <tree string="account_move_recv_tree">
+                    <field name="create_date" string="Received on"/>
+                    <field name="spplrInvcNo"/>
+                    <field name="spplrNm"/>
+                    <field name="spplrTin"/>
+                    <field name="spplrBhfId"/>
+                    <!--<field name="sdc_rec_id"/>-->
+                    <field name="totTaxblAmt"/>
+                    <field name="totTaxAmt"/>
+                    <field name="totAmt"/>
+                    <field name="synchronized" widget='boolean_toggle' readonly="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="recv_import_item_view_tree" model="ir.ui.view">
+            <field name="name">recv.import.item.tree</field>
+            <field name="model">recv.import.item</field>
+            <field name="arch" type="xml">
+                <tree string="recv_import_item_tree">
+                    <field name="create_date" string="Received on"/>
+                    <field name="taskCd"/>
+                    <field name="spplrNm"/>
+                    <!--                    <field name="sdc_rec_id"/>-->
+                    <field name="agntNm"/>
+                    <field name="itemNm"/>
+                    <field name="pkg"/>
+                    <field name="qty"/>
+                    <field name="invcFcurAmt"/>
+                    <field name="invcFcurCd"/>
+                    <field name="invcFcurExcrt"/>
+                    <field name="dclDe"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="account_move_recv_view_form" model="ir.ui.view">
+            <field name="name">account.move.recv.form</field>
+            <field name="model">account.move.recv</field>
+            <field name="arch" type="xml">
+                <form string="account_move_recv_form" edit="0">
+                    <sheet>
+                        <group>
+                            <group string="Supplier Info">
+                                <field name="spplrInvcNo"/>
+                                <!--<field name="sdc_rec_id"/>-->
+                                <field name="spplrNm"/>
+                                <field name="spplrTin"/>
+                                <field name="spplrBhfId"/>
+                            </group>
+                            <group string="Dates">
+                                <field name="create_date" string="Received on"/>
+                                <field name="salesDt"/>
+                                <field name="cfmDt"/>
+                                <field name="stockRlsDt"/>
+                                <field name="rcptTyCd"/>
+                                <field name="pmtTyCd"/>
+                                <field name="totItemCnt"/>
+                                <field name="synchronized" widget="boolean" readonly="1"/>
+                            </group>
+
+                            <group string="Tax Details">
+                                <field name="taxblAmtA" attrs="{'invisible': [('taxblAmtA', '=', 0)]}"/>
+                                <field name="taxblAmtB" attrs="{'invisible': [('taxblAmtB', '=', 0)]}"/>
+                                <field name="taxblAmtC" attrs="{'invisible': [('taxblAmtC', '=', 0)]}"/>
+                                <field name="taxblAmtD" attrs="{'invisible': [('taxblAmtD', '=', 0)]}"/>
+                                <field name="taxRtA" attrs="{'invisible': [('taxRtA', '=', 0)]}"/>
+                                <field name="taxRtB" attrs="{'invisible': [('taxRtB', '=', 0)]}"/>
+                                <field name="taxRtC" attrs="{'invisible': [('taxRtC', '=', 0)]}"/>
+                                <field name="taxRtD" attrs="{'invisible': [('taxRtD', '=', 0)]}"/>
+                                <field name="taxAmtA" attrs="{'invisible': [('taxAmtA', '=', 0)]}"/>
+                                <field name="taxAmtB" attrs="{'invisible': [('taxAmtB', '=', 0)]}"/>
+                                <field name="taxAmtC" attrs="{'invisible': [('taxAmtC', '=', 0)]}"/>
+                                <field name="taxAmtD" attrs="{'invisible': [('taxAmtD', '=', 0)]}"/>
+                            </group>
+
+                            <group string="Totals">
+                                <field name="totTaxblAmt"/>
+                                <field name="totTaxAmt"/>
+                                <field name="totAmt"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="line_ids" string="Lines">
+                                <field name="line_ids">
+                                    <tree>
+                                        <field name="itemSeq"/>
+                                        <field name="itemNm"/>
+                                        <field name="itemClsCd" optional="hide"/>
+                                        <field name="pkgUnitCd" optional="hide"/>
+                                        <field name="pkg"/>
+                                        <field name="qtyUnitCd" optional="hide"/>
+                                        <field name="qty"/>
+                                        <field name="prc"/>
+                                        <field name="splyAmt" optional="hide"/>
+                                        <field name="dcRt" optional="hide"/>
+                                        <field name="dcAmt"/>
+                                        <field name="taxTyCd"/>
+                                        <field name="taxblAmt"/>
+                                        <field name="taxAmt"/>
+                                        <field name="totAmt"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="vsdc" string="VSDC">
+                                <group>
+                                    <field name="request" readonly="1"/>
+                                    <field name="response" string="Response" readonly="1"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="recv_import_item_view_form" model="ir.ui.view">
+            <field name="name">recv.import.item.form</field>
+            <field name="model">recv.import.item</field>
+            <field name="arch" type="xml">
+                <form string="Received Import Items">
+                    <header>
+                        <!--                        <button name="action_approve" string="Approve" class="oe_highlight"-->
+                        <!--                                type="object" groups="purchase.group_purchase_user" data-hotkey="v"-->
+                        <!--                                attrs="{'invisible': [('state', '!=', 'waiting')]}"-->
+                        <!--                        />-->
+                        <button name="action_reject" string="Reject" class="oe_highlight"
+                                type="object" groups="purchase.group_purchase_user" data-hotkey="v"
+                                attrs="{'invisible': [('state', '!=', 'waiting')]}"
+                        />
+                        <field name="state" widget="statusbar" statusbar_visible="waiting,approved,rejected"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="taskCd"/>
+                                <field name="dclDe"/>
+                                <field name="itemSeq"/>
+                                <field name="dclNo"/>
+                                <field name="hsCd"/>
+                                <field name="itemNm"/>
+                                <field name="orgnNatCd"/>
+                                <field name="exptNatCd"/>
+                                <field name="pkgUnitCd"/>
+                                <field name="pkg"/>
+                                <field name="qtyUnitCd"/>
+                                <field name="qty"/>
+                            </group>
+                            <group>
+                                <field name="totWt"/>
+                                <field name="netWt"/>
+                                <field name="spplrNm"/>
+                                <field name="agntNm"/>
+                                <field name="invcFcurAmt"/>
+                                <field name="invcFcurCd"/>
+                                <field name="invcFcurExcrt"/>
+                                <field name="imptItemsttsCd"/>
+                                <field name="create_date" string="Received on"/>
+                                <field name="sent_to_vsdc"/>
+                            </group>
+<!--                            <field name="move_line_ids"/>-->
+                        </group>
+                        <notebook>
+                            <page name="move_lines" string="Connected Move Lines">
+                                <field name="move_line_ids" readonly="1"/>
+                            </page>
+                            <page name="vsdc" string="VSDC">
+                                <group string="Update Request/Response Data">
+                                    <field name="update_request" readonly="1"/>
+                                    <field name="update_response" readonly="1"/>
+                                </group>
+                                <group string="Import Request/Response Data">
+                                    <field name="import_request" readonly="1"/>
+                                    <field name="import_response" string="Response" readonly="1"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="recv_import_item_search_view" model="ir.ui.view">
+            <field name="name">recv.import.item.search</field>
+            <field name="model">recv.import.item</field>
+            <field name="arch" type="xml">
+                <search string="Import Items">
+                    <field name="taskCd" string="Task Code" filter_domain="[('taskCd','ilike',self)]"/>
+                    <field name="itemNm" string="Item Name" filter_domain="[('itemNm','ilike',self)]"/>
+                    <field name="spplrNm" string="Supplier Name" filter_domain="[('spplrNm','ilike',self)]"/>
+                    <field name="agntNm" string="Agent Name" filter_domain="[('agntNm','ilike',self)]"/>
+                    <filter name="state" string="To approve" domain="[('state','=', 'waiting')]"/>
+                    <filter name="state" string="Approved" domain="[('state','=', 'approved')]"/>
+                    <filter name="state" string="Rejected" domain="[('state','=', 'rejected')]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_account_move_recv" model="ir.actions.act_window">
+            <field name="name">Received Purchases</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.move.recv</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Nothing here yet
+                </p>
+                <p>
+                    Received purchases will be displayed here
+                </p>
+            </field>
+        </record>
+
+        <record id="action_recv_import_item" model="ir.actions.act_window">
+            <field name="name">Received Import Items</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">recv.import.item</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Nothing here yet
+                </p>
+                <p>
+                    Received import items will be displayed here
+                </p>
+            </field>
+        </record>
+
+        <record id="action_reject_import_item" model="ir.actions.server">
+            <field name="name">Reject</field>
+            <field name="model_id" ref="model_recv_import_item"/>
+            <field name="binding_model_id" ref="model_recv_import_item"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="groups_id" eval="[(4, ref('purchase.group_purchase_user'))]"/>
+            <field name="code">action = records.action_reject()</field>
+        </record>
+
+        <menuitem id="menu_recv" name="Received" parent="purchase.menu_procurement_management" sequence="100"/>
+
+        <menuitem id="menu_ccount_move_recv" name="Purchases" parent="menu_recv" action="action_account_move_recv"
+                  sequence="1"/>
+
+        <menuitem id="menu_recv_import_item" name="Import Items" parent="menu_recv" action="action_recv_import_item"
+                  sequence="2"/>
+    </data>
+</odoo>

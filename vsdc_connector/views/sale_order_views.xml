@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Inherit Form View to Modify it -->
+        <record id="sdc_view_order_form" model="ir.ui.view">
+            <field name="name">sale.order.form.vsdc</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//group[@name='order_details']" position="inside">
+                    <field name="payment_method_id" required="1"/>
+                </xpath>
+
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="item_classification_form_view" model="ir.ui.view">
+            <field name="name">item.classification.form</field>
+            <field name="model">item.classification</field>
+            <field name="arch" type="xml">
+                <form string="Item Classification">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="code"/>
+                                <field name="level"/>
+                            </group>
+                            <group>
+                                <field name="name"/>
+                                <field name="rra_code"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="item_classification_tree_view" model="ir.ui.view">
+            <field name="name">item.classification.tree</field>
+            <field name="model">item.classification</field>
+            <field name="arch" type="xml">
+                <tree string="Item Classification">
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="level"/>
+                    <field name="rra_code"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="item_classification_search_view" model="ir.ui.view">
+            <field name="name">item.classification.search</field>
+            <field name="model">item.classification</field>
+            <field name="arch" type="xml">
+                <search string="Item Classification">
+                    <group expand="1" string="Group By">
+                        <filter string="Level" name="level" context="{'group_by':'level'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="item_classification_act_window" model="ir.actions.act_window">
+            <field name="name">Item Classification</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">item.classification</field>
+            <field name="binding_view_types">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    There is no records yet. Click here to add new Item Classification record.
+                </p>
+            </field>
+        </record>
+
+        <record id="vsdc_adjustment_reason_tree" model="ir.ui.view">
+            <field name="name">vsdc.inventory.adjustment.reason.tree</field>
+            <field name="model">vsdc.inventory.adjustment.reason</field>
+            <field name="arch" type="xml">
+                <tree string="Inventory Adjustment Reason" create="0" edit="0">
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="description"/>
+                    <field name="active"/>
+                    <field name="user_defined_code1"/>
+                    <field name="user_defined_code2"/>
+                    <field name="user_defined_code3"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_vsdc_adjustment_reason">
+            <field name="name">VSDC Inventory Adjustment Reasons</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">vsdc.inventory.adjustment.reason</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <record id="vsdc_stock_in_out_types_tree" model="ir.ui.view">
+            <field name="name">vsdc.stock.in.out.type.tree</field>
+            <field name="model">vsdc.stock.in.out.type</field>
+            <field name="arch" type="xml">
+                <tree string="Stock In/Out Types" create="0" edit="0">
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="description"/>
+                    <field name="active"/>
+                    <field name="user_defined_code1"/>
+                    <field name="user_defined_code2"/>
+                    <field name="user_defined_code3"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_vsdc_stock_in_out_types">
+            <field name="name">VSDC Stock In/Out Types</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">vsdc.stock.in.out.type</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+
+        <menuitem id="menu_stock_vsdc" name="VSDC" parent="stock.menu_stock_config_settings" sequence="500"/>
+        <menuitem id="menu_vsdc_adjustment_reasons" name="VSDC Adjustment Reasons" parent="menu_stock_vsdc"
+                  action="action_vsdc_adjustment_reason"/>
+        <menuitem id="menu_vsdc_stock_in_out_types" name="VSDC Stock In/Out Types" parent="menu_stock_vsdc"
+                  action="action_vsdc_stock_in_out_types"/>
+
+        <menuitem name="Item Classification" id="item_classification_menu" parent="menu_stock_vsdc" action="item_classification_act_window"/>
+    </data>
+</odoo>

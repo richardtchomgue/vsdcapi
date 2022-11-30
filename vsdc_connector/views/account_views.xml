@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Only one credit card note can be created per invoice so hide the
+             Add Credit Note button from the user if the invoice is a refund or if there
+             exists a reversal entry for the given invoice-->
+        <record id="view_move_form_ext" model="ir.ui.view">
+            <field name="name">cis.move.form</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="priority">100</field>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='button_draft']" position="replace">
+                    <field name="bill_ok" invisible="1"/>
+                    <field name="import_ok" invisible="1"/>
+                    <field name="sent_to_vsdc" invisible="1"/>
+                    <field name="invoice_ok" invisible="1"/>
+                    <button name="button_sdc_send_invoice" string="Send Receipt to VSDC" type="object"
+                            groups="account.group_account_invoice"
+                            attrs="{'invisible' : ['|','|',('state', '!=', 'posted'),('invoice_ok', '!=', True),('sent_to_vsdc', '=', True)]}"/>
+
+                    <button name="button_sdc_send_bill" string="Send Bill to VSDC" type="object"
+                            groups="account.group_account_invoice"
+                            attrs="{'invisible' : ['|','|','|',('bill_ok', '!=', True), ('state', '!=', 'posted'),('sent_to_vsdc','!=',False),('import_ok','!=',False)]}"/>
+
+                </xpath>
+                <xpath expr="//field[@name='purchase_vendor_bill_id']" position="after">
+                    <field name="stamp" invisible="1"/>
+                    <field name="import_ok" invisible="1"/>
+                    <field name="vat" invisible="1"/>
+                    <field name="registration_type" attrs="{'invisible':[('move_type','!=', 'in_invoice')]}"/>
+                    <field name="recv_invoice_id"
+                           attrs="{'invisible':['|','|', ('registration_type','!=','A'),('move_type', '!=', 'in_invoice'),('import_ok','!=',False)],'required':[('registration_type','=','A'),('move_type', '=', 'in_invoice'),('import_ok','=',False)]}"
+                           domain="[('synchronized','=',False),('spplrTin','=',vat)]"/>
+                    <field name="import_item_id"
+                           domain="[('state','=','waiting')]"
+                           attrs="{'invisible':['|','|', ('registration_type','!=','A'),('move_type', '!=', 'in_invoice'),('import_ok','=',False)],'required':[('registration_type','=','A'),('move_type', '=', 'in_invoice'),('import_ok','!=',False)]}"/>
+                    <field name="taskCd" invisible="1"/>
+                </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='tax_ids']" position="after">
+                    <field name="recv_line_id"
+                           attrs="{'column_invisible':['|','|',('parent.registration_type','!=','A'),('parent.move_type', '!=', 'in_invoice'),('parent.import_ok','!=',False)]}"
+                           domain="[('move_id','=',parent.recv_invoice_id)]"/>
+                </xpath>
+                <xpath expr="//field[@name='line_ids']/tree//field[@name='tax_ids']" position="after">
+                    <field name="recv_line_id" invisible="1" domain="[('move_id','=',parent.recv_invoice_id)]"/>
+                </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='tax_ids']" position="after">
+                    <field name="import_item_id"
+                           attrs="{'column_invisible':['|','|',('parent.registration_type','!=','A'),('parent.move_type', '!=', 'in_invoice'),('parent.import_ok','=',False)],'required':[('parent.import_ok','!=',False)]}"
+                           domain="[('state','=','waiting'), ('taskCd', '=', parent.taskCd)]"/>
+                </xpath>
+                <xpath expr="//field[@name='line_ids']/tree//field[@name='tax_ids']" position="after">
+                    <field name="import_item_id" invisible="1"/>
+                </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page name="vsdc" string="VSDC"
+                          attrs="{'invisible':[('bill_ok','=',False),('invoice_ok','=',False),'|',('state','=','draft')]}">
+                        <group>
+                            <group>
+                                <field name="receipt_number" string="Invoice ID"
+                                       attrs="{'invisible':[('state','!=','posted')]}"/>
+                            </group>
+                            <group>
+                                <field name="sdc_receipt_number" string="SDC Receipt Number"
+                                       attrs="{'invisible':['|',('move_type','not in',('out_invoice','out_refund')), ('import_ok','!=',False)]}"/>
+                            </group>
+                            <!--                            TODO: Add stamp data here-->
+                        </group>
+                        <group>
+                            <field name="send_receipt" attrs="{'invisible':[('invoice_ok','=',False)]}" readonly="1"/>
+                            <field name="send_receipt_response" attrs="{'invisible':[('invoice_ok','=',False)]}" readonly="1"/>
+                            <field name="send_purchase" attrs="{'invisible':['|', ('bill_ok','=',False), ('import_ok','=',True)]}" readonly="1"/>
+                            <field name="send_purchase_response" attrs="{'invisible':['|',  ('bill_ok','=',False), ('import_ok','=',True)]}" readonly="1"/>
+                            <field name="send_import_item" attrs="{'invisible':['|', ('bill_ok','=',False),('import_ok','=',False)]}" readonly="1"/>
+                            <field name="send_import_response" attrs="{'invisible':['|', ('bill_ok','=',False),('import_ok','=',False)]}" readonly="1"/>
+                            <field name="synced_date" readonly="1"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <!--   All taxes should be price_included hence we make the price_include checkbox readonly -->
+        <record id="view_tax_form_ext" model="ir.ui.view">
+            <field name="name">account.tax.form</field>
+            <field name="model">account.tax</field>
+            <field name="inherit_id" ref="account.view_tax_form"/>
+            <field name="priority">100</field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="rra_code"/>
+                </xpath>
+                <xpath expr="//group[@name='advanced_booleans']" position="replace">
+                    <group name="advanced_booleans">
+                        <field name="price_include" attrs="{'invisible':[('amount_type','=', 'group')]}" readonly="1"/>
+                        <field name="hide_tax_exigibility" invisible="1"/>
+                        <field name="tax_exigibility" widget="radio"
+                               attrs="{'invisible':['|', ('amount_type','=', 'group'), ('hide_tax_exigibility', '=', False)]}"
+                               groups="account.group_account_user"/>
+                        <field name="cash_basis_transition_account_id" options="{'no_create': True}"
+                               attrs="{'invisible': [('tax_exigibility', '=', 'on_invoice')], 'required': [('tax_exigibility', '=', 'on_payment')]}"
+                               groups="account.group_account_user"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="sdc_vsdc_return_reason_tree" model="ir.ui.view">
+            <field name="name">vsdc.return.reason.tree</field>
+            <field name="model">vsdc.return.reason</field>
+            <field name="arch" type="xml">
+                <tree string="Refund Reasons" create="0" editable="bottom">
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="description"/>
+                    <field name="active"/>
+                    <field name="user_defined_code1"/>
+                    <field name="user_defined_code2"/>
+                    <field name="user_defined_code3"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_refund_reasons">
+            <field name="name">Refund Reasons</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">vsdc.return.reason</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem id="menu_account_vsdc" name="VSDC" parent="account.menu_finance_configuration" sequence="500"/>
+        <menuitem id="menu_vsdc_refund_reasons" name="Refund Reasons" parent="menu_account_vsdc"
+                  action="action_refund_reasons"/>
+
+    </data>
+</odoo>

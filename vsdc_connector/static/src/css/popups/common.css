@@ -1,0 +1,40 @@
+/* Input style used in cash control popups */
+.pos .popup .reasons-list{
+    font-size: 16px;
+    width: 100%;
+}
+.pos .popup .reasons-list th,
+.pos .popup .reasons-list td {
+    padding: 12px 8px;
+}
+
+.pos .popup .reasons-list tr{
+    transition: all 150ms linear;
+    background: rgb(230,230,230);
+}
+.pos .popup .reasons-list tr.highlight{
+    transition: all 150ms linear;
+    background: rgb(110,200,155) !important;
+    color: white;
+}
+.pos .popup .reasons-list tr.reason-line{
+    transition: all 150ms linear;
+    background: rgb(230,230,230);
+}
+.pos .popup .reasons-list tr.reason-line:nth-child(even){
+    transition: all 150ms linear;
+    background: rgb(247,247,247);
+}
+.pos .reason-line {
+    vertical-align: text-top;
+}
+
+/*.pos .popup .reasons-list tr:hover {background-color: #6ec89b;}*/
+
+@media screen and (max-width: 768px) {
+    .pos .popup .reasons-list td {
+        overflow: hidden;
+        white-space: nowrap;
+    }
+}
+

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record model="ir.rule" id="account_move_recv_rule">
+            <field name="name">Received Purchases multi-company</field>
+            <field name="model_id" ref="model_account_move_recv"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        </record>
+
+        <record model="ir.rule" id="account_move_recv_line_rule">
+            <field name="name">Received Purchaseitems multi-company</field>
+            <field name="model_id" ref="model_account_move_line_recv"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        </record>
+
+        <record model="ir.rule" id="recv_import_item_rule">
+            <field name="name">Import items multi-company</field>
+            <field name="model_id" ref="model_recv_import_item"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        </record>
+
+    </data>
+</odoo>

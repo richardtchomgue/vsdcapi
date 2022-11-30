@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="ReasonLine" owl="1">
+        <tr t-attf-class="reason-line {{highlight}}" t-att-data-id="props.reason._id"
+            t-on-click="trigger('click-reason', {reason: props.reason})">
+            <td>
+                <t t-esc="props.reason.text or ''"/>
+            </td>
+        </tr>
+    </t>
+
+</templates>
