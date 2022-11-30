@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="packaging_unit_ct" model="packaging.unit">
+            <field name="code">CT</field>
+            <field name="name">Carton</field>
+            <field name="description">Carton</field>
+        </record>
+        <record id="quantity_unit_kg" model="quantity.unit">
+            <field name="code">KG</field>
+            <field name="name">Kilo-Gramme</field>
+            <field name="description">Kilo-Gramme</field>
+        </record>
+
+    </data>
+</odoo>
